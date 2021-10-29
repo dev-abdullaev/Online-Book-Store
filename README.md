@@ -7,6 +7,7 @@
 Clone this repo or just download directly from github and activate virtualenv.<br> 
 if you are in mac or linux then
 
+
 ```bash
 source venv/bin/activate
 ```
