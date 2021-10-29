@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <main class="pt-5">
+        <div class="row g-3">
+            <div class="col-md-5 col-lg-5 order-md-first ">
+                <img class="img-fluid mx-auto d-block" width="100%" alt="Responsive image" src="{{ product.cover.url }}">
+            </div>
+            <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
+                <h1 class="mb-0 h4">{{ product.book_name }} | {{product.category.title}}</h1>
+                <p><span class="lead">{{ product.author_name }} | </span> (Author)</p>
+                <p>{{ product.description }}</p>
+                <div class="">
+                    <div class="col border-bottom">
+                        <div class="d-flex ">
+                            <div class="col-6"><span class="h4 fw-bold">${{ product.price }}</span><br>
+                            <span>Taxes are included</span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <label for="select">Quantity</label>
+                                <select id="select" class='bg-none'>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select> 
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col">
+                        <div class="row">
+                            
+                            <div class="col-12">
+                            {% if request.user.is_superuser %}
+                                <button style='border-radius:0px;width: 370px' type="button" id="add-button" value="{{product.id}}" class="btn btn-outline-dark text-uppercase">Add To Cart</button>
+                                <a style='border-radius:0px' href="{% url 'book_update' product.slug %}" class='btn btn-primary'>Update</a>
+                                <a style='border-radius:0px' href="{% url 'book_delete' product.slug %}" class='btn btn-danger'>Delete</a>
+                            {% else %}
+                                <button style='border-radius:0px' type="button" id="add-button" value="{{product.id}}" class="btn w-100 btn-outline-dark text-uppercase">Add To Cart</button>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+
+<script>
+    $(document).on('click', '#add-button', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "basket_add" %}',
+            data: {
+                productid: $('#add-button').val(),
+                productqty: $('#select option:selected').text(),
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+               document.getElementById("basket-qty").innerHTML = json.qty
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+</script>
+
+{% endblock %}
