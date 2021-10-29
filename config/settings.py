@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import django-heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -123,3 +124,4 @@ BASKET_SESSION_ID = "basket"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
+django_heroku.settings(locals())
